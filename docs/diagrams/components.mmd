@@ -1,0 +1,84 @@
+classDiagram
+    class ClientResource {
+        -ClientService clientService
+        -UriInfo uriInfo
+        +createClient(CreateClientRequest) Response
+        +getAllClients() Response
+        +getClientsByCountry(String) Response
+        +getClientByUuid(String) Response
+        +updateClient(String, UpdateClientRequest) Response
+        +deleteClient(String) Response
+        +getClientCount() Response
+    }
+
+    class ClientService {
+        -ClientRepository clientRepository
+        -CountryService countryService
+        +createClient(CreateClientRequest) Client
+        +getAllClients() List~Client~
+        +getClientsByCountry(String) List~Client~
+        +getClientByUuid(String) Client
+        +updateClient(String, UpdateClientRequest) Client
+        +deleteClient(String) void
+        +countClients() long
+        +countClientsByCountry(String) long
+    }
+
+    class ClientRepository {
+        <<PanacheRepository>>
+        +findByCountryCode(String) List~Client~
+        +findActiveByUuid(String) Optional~Client~
+        +findByEmail(String) Optional~Client~
+        +existsByEmail(String) boolean
+        +existsByEmailAndUuidNot(String, String) boolean
+        +existsByPhone(String) boolean
+        +existsByPhoneAndUuidNot(String, String) boolean
+        +findAllOrderByCreatedAtDesc() List~Client~
+        +countActive() long
+        +countActiveByCountryCode(String) long
+    }
+
+    class CountryService {
+        -RestCountriesClient restCountriesClient
+        +getDemonym(String) String
+        +isValidCountryCode(String) boolean
+        +getCountryName(String) Optional~String~
+    }
+
+    class Client {
+        <<Entity>>
+        +Long id
+        +String uuid
+        +String firstName
+        +String secondName
+        +String firstSurname
+        +String secondSurname
+        +String email
+        +String address
+        +String phone
+        +String countryCode
+        +String demonym
+        +boolean active
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
+        +getFullName() String
+    }
+
+    class ApiResponse~T~ {
+        +boolean success
+        +String message
+        +T data
+        +LocalDateTime timestamp
+        +List~FieldError~ errors
+        +ok(T, String)$ ApiResponse
+        +created(T, String)$ ApiResponse
+        +noContent(String)$ ApiResponse
+        +error(String)$ ApiResponse
+        +validationError(String, List)$ ApiResponse
+    }
+
+    ClientResource --> ClientService : delegates
+    ClientResource --> ApiResponse : wraps responses
+    ClientService --> ClientRepository : persists
+    ClientService --> CountryService : validates country
+    ClientRepository --> Client : manages

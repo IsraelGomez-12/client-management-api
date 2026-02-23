@@ -1,0 +1,47 @@
+graph TB
+    subgraph "Presentation Layer"
+        direction LR
+        RES[ClientResource<br/>JAX-RS Endpoints]
+        DTO[DTOs<br/>Request / Response]
+        EXC[GlobalExceptionHandler<br/>ValidationExceptionMapper]
+    end
+
+    subgraph "Business Layer"
+        direction LR
+        SVC[ClientService<br/>CRUD + Soft Delete]
+        VAL[Bean Validation<br/>Constraints]
+    end
+
+    subgraph "Data Access Layer"
+        direction LR
+        REP[ClientRepository<br/>Panache]
+        ENT[Client Entity<br/>JPA]
+    end
+
+    subgraph "Integration Layer"
+        direction LR
+        CS[CountryService]
+        RC[RestCountriesClient<br/>MicroProfile REST]
+    end
+
+    subgraph "Infrastructure"
+        direction LR
+        DB[(SQL Server / H2)]
+        EXT[restcountries.com]
+    end
+
+    RES --> SVC
+    DTO --> RES
+    EXC --> RES
+    SVC --> REP
+    SVC --> CS
+    SVC --> VAL
+    CS --> RC
+    REP --> ENT
+    REP --> DB
+    RC --> EXT
+
+    style RES fill:#4a9eff
+    style SVC fill:#4aff9e
+    style REP fill:#ff9e4a
+    style CS fill:#ff4a9e

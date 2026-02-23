@@ -1,0 +1,20 @@
+flowchart TD
+    A[POST /api/v1/clients] --> B{Bean Validation}
+    B -->|Invalid| C[400 Bad Request]
+    B -->|Valid| D{Email exists<br/>among active?}
+    D -->|Yes| E[409 Conflict]
+    D -->|No| F{Phone exists<br/>among active?}
+    F -->|Yes| G[409 Conflict]
+    F -->|No| H{Valid country code?<br/>RestCountries API}
+    H -->|Invalid| I[400 Bad Request]
+    H -->|Valid| J[Set demonym from API]
+    J --> K[Generate UUID]
+    K --> L[Persist + Flush]
+    L --> M[201 Created + ApiResponse]
+
+    style A fill:#e1f5fe
+    style M fill:#c8e6c9
+    style C fill:#ffcdd2
+    style E fill:#ffcdd2
+    style G fill:#ffcdd2
+    style I fill:#ffcdd2

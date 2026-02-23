@@ -1,0 +1,17 @@
+erDiagram
+    CLIENTS {
+        bigint id PK "Auto-generated (sequence)"
+        varchar_36 uuid UK "UUID v4, exposed as public ID"
+        varchar_100 first_name "Required"
+        varchar_100 second_name "Optional"
+        varchar_100 first_surname "Required"
+        varchar_100 second_surname "Optional"
+        varchar_255 email "Required, unique among active"
+        varchar_500 address "Required"
+        varchar_20 phone "Required, unique among active"
+        varchar_2 country_code "ISO 3166-1 alpha-2"
+        varchar_100 demonym "Fetched from RestCountries"
+        boolean active "Soft delete flag, default true"
+        timestamp created_at "Set on creation"
+        timestamp updated_at "Set on every update"
+    }

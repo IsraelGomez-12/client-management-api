@@ -1,0 +1,42 @@
+sequenceDiagram
+    participant C as API Consumer
+    participant R as ClientResource
+    participant S as ClientService
+    participant CS as CountryService
+    participant RC as RestCountriesClient
+    participant DB as ClientRepository
+    participant H2 as Database
+
+    Note over C,H2: POST /api/v1/clients (Create)
+    C->>R: POST JSON body
+    R->>R: Bean Validation
+    R->>S: createClient(request)
+    S->>DB: existsByEmail(email)
+    DB->>H2: SELECT COUNT
+    H2-->>DB: 0
+    DB-->>S: false
+    S->>DB: existsByPhone(phone)
+    DB->>H2: SELECT COUNT
+    H2-->>DB: 0
+    DB-->>S: false
+    S->>CS: getDemonym(countryCode)
+    CS->>RC: GET /alpha/{code}
+    RC-->>CS: CountryData[]
+    CS-->>S: "American"
+    S->>DB: persist(client)
+    DB->>H2: INSERT
+    S->>DB: flush()
+    DB->>H2: COMMIT
+    S-->>R: Client entity
+    R-->>C: 201 ApiResponse + Location
+
+    Note over C,H2: DELETE /api/v1/clients/:uuid (Soft Delete)
+    C->>R: DELETE
+    R->>S: deleteClient(uuid)
+    S->>DB: findActiveByUuid(uuid)
+    DB->>H2: SELECT WHERE active=true
+    H2-->>DB: Client
+    DB-->>S: Optional(Client)
+    S->>S: client.active = false
+    S-->>R: void
+    R-->>C: 200 ApiResponse

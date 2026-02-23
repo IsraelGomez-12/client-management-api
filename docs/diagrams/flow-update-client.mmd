@@ -1,0 +1,28 @@
+flowchart TD
+    A[PATCH /api/v1/clients/:uuid] --> B{Bean Validation}
+    B -->|Invalid| C[400 Bad Request]
+    B -->|Valid| D{Active client<br/>with UUID?}
+    D -->|No| E[404 Not Found]
+    D -->|Yes| F{Email changed?}
+    F -->|Yes| G{New email unique<br/>among active?}
+    G -->|No| H[409 Conflict]
+    G -->|Yes| I{Phone changed?}
+    F -->|No| I
+    I -->|Yes| J{New phone unique<br/>among active?}
+    J -->|No| K[409 Conflict]
+    J -->|Yes| L{Country changed?}
+    I -->|No| L
+    L -->|Yes| M{Valid country code?<br/>RestCountries API}
+    M -->|Invalid| N[400 Bad Request]
+    M -->|Valid| O[Update demonym]
+    O --> P[Update fields + timestamp]
+    L -->|No| P
+    P --> Q[200 OK + ApiResponse]
+
+    style A fill:#e1f5fe
+    style Q fill:#c8e6c9
+    style C fill:#ffcdd2
+    style E fill:#ffcdd2
+    style H fill:#ffcdd2
+    style K fill:#ffcdd2
+    style N fill:#ffcdd2

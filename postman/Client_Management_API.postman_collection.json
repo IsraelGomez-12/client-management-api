@@ -1,0 +1,483 @@
+{
+	"info": {
+		"_postman_id": "client-management-api-collection",
+		"name": "Client Management API",
+		"description": "RESTful API for managing client information with CRUD operations.\n\nBase URL: http://localhost:8080/api/v1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "clientUuid",
+			"value": "7b2a4e8f-3c1d-4a5b-9e6f-8d7c2b1a0e3f",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Clients",
+			"item": [
+				{
+					"name": "Create Client",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Juan\",\n    \"secondName\": \"Carlos\",\n    \"firstSurname\": \"Pérez\",\n    \"secondSurname\": \"González\",\n    \"email\": \"juan.perez@example.com\",\n    \"address\": \"Av. Reforma 123, Ciudad de México, CDMX 06600\",\n    \"phone\": \"+52-55-9876-5432\",\n    \"countryCode\": \"MX\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Creates a new client. The demonym is automatically fetched from the RestCountries API based on the country code."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client (Minimal)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Laura\",\n    \"firstSurname\": \"Martínez\",\n    \"email\": \"laura.martinez@example.com\",\n    \"address\": \"Calle Principal 456, Bogotá\",\n    \"phone\": \"+57-1-555-1234\",\n    \"countryCode\": \"CO\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Creates a new client with only required fields (no second name or second surname)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Retrieves all active clients ordered by creation date (newest first)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client by UUID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientUuid}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "{{clientUuid}}"]
+						},
+						"description": "Retrieves a specific client by their UUID."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clients by Country",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/country/MX",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "country", "MX"]
+						},
+						"description": "Retrieves all active clients from a specific country using the ISO 3166-1 alpha-2 code.\n\nExamples: US, MX, ES, AR, CO"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clients by Country (US)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/country/US",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "country", "US"]
+						},
+						"description": "Retrieves all active clients from the United States."
+					},
+					"response": []
+				},
+				{
+				"name": "Update Client",
+				"request": {
+					"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john.doe.updated@example.com\",\n    \"address\": \"456 New Avenue, Los Angeles, CA 90001\",\n    \"phone\": \"+1-555-999-8888\",\n    \"countryCode\": \"US\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientUuid}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "{{clientUuid}}"]
+						},
+						"description": "Updates an existing client. Only email, address, phone, and country code can be modified."
+					},
+					"response": []
+				},
+				{
+				"name": "Update Client (Change Country)",
+				"request": {
+					"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"address\": \"Calle Mayor 100, Madrid, 28001\",\n    \"phone\": \"+34-91-555-1234\",\n    \"countryCode\": \"ES\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientUuid}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "{{clientUuid}}"]
+						},
+						"description": "Updates a client and changes their country. The demonym is automatically re-fetched."
+					},
+					"response": []
+				},
+				{
+					"name": "Soft-Delete Client",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientUuid}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "{{clientUuid}}"]
+						},
+						"description": "Soft-deletes a client (sets active=false). The record stays in the database but won't appear in queries."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/count",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "count"]
+						},
+						"description": "Returns the total number of active clients."
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD operations for managing clients."
+		},
+		{
+			"name": "Error Cases",
+			"item": [
+				{
+					"name": "Create Client - Missing Required Fields",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Test\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Attempt to create a client with missing required fields. Should return 400."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client - Invalid Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Test\",\n    \"firstSurname\": \"User\",\n    \"email\": \"invalid-email\",\n    \"address\": \"Test Address 123\",\n    \"phone\": \"+1-555-123-4567\",\n    \"countryCode\": \"US\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Attempt to create a client with an invalid email format. Should return 400."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client - Invalid Country Code (3 letters)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Test\",\n    \"firstSurname\": \"User\",\n    \"email\": \"test@example.com\",\n    \"address\": \"Test Address 123\",\n    \"phone\": \"+1-555-123-4567\",\n    \"countryCode\": \"USA\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Country code must be exactly 2 letters (ISO 3166-1 alpha-2). Should return 400."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client - Invalid Country Code (non-existent)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Test\",\n    \"firstSurname\": \"User\",\n    \"email\": \"test.rd@example.com\",\n    \"address\": \"Test Address 123\",\n    \"phone\": \"+1-555-000-0001\",\n    \"countryCode\": \"RD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Country code 'RD' does not exist in ISO 3166. Should return 400."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client - Duplicate Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Another\",\n    \"firstSurname\": \"User\",\n    \"email\": \"john.doe@example.com\",\n    \"address\": \"Different Address 789\",\n    \"phone\": \"+1-555-111-2222\",\n    \"countryCode\": \"US\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Attempt to create a client with an email that already exists among active clients. Should return 409."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client - Duplicate Phone",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Another\",\n    \"firstSurname\": \"User\",\n    \"email\": \"unique.email@example.com\",\n    \"address\": \"Different Address 789\",\n    \"phone\": \"+1-555-123-4567\",\n    \"countryCode\": \"US\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients"]
+						},
+						"description": "Attempt to create a client with a phone number that already exists among active clients. Should return 409."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client - Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/00000000-0000-0000-0000-000000000000",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "00000000-0000-0000-0000-000000000000"]
+						},
+						"description": "Attempt to get a client that doesn't exist. Should return 404."
+					},
+					"response": []
+				},
+				{
+				"name": "Update Client - Not Found",
+				"request": {
+					"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"address\": \"Test Address 123\",\n    \"phone\": \"+1-555-123-4567\",\n    \"countryCode\": \"US\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/00000000-0000-0000-0000-000000000000",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "00000000-0000-0000-0000-000000000000"]
+						},
+						"description": "Attempt to update a client that doesn't exist. Should return 404."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Client - Not Found",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/00000000-0000-0000-0000-000000000000",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "00000000-0000-0000-0000-000000000000"]
+						},
+						"description": "Attempt to delete a client that doesn't exist. Should return 404."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clients by Country - Invalid Format",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/country/USA",
+							"host": ["{{baseUrl}}"],
+							"path": ["clients", "country", "USA"]
+						},
+						"description": "Country code must be exactly 2 letters. Should return 400."
+					},
+					"response": []
+				}
+			],
+			"description": "Test cases for error handling and validation."
+		},
+		{
+			"name": "Health & Documentation",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/health",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["health"]
+						},
+						"description": "Check the overall health status of the application."
+					},
+					"response": []
+				},
+				{
+					"name": "Health - Liveness",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/health/live",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["health", "live"]
+						},
+						"description": "Check if the application is alive."
+					},
+					"response": []
+				},
+				{
+					"name": "Health - Readiness",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/health/ready",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["health", "ready"]
+						},
+						"description": "Check if the application is ready to receive traffic."
+					},
+					"response": []
+				},
+				{
+					"name": "OpenAPI Specification",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/q/openapi",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["q", "openapi"]
+						},
+						"description": "Get the OpenAPI specification in YAML format."
+					},
+					"response": []
+				}
+			],
+			"description": "Health check and documentation endpoints."
+		}
+	]
+}
